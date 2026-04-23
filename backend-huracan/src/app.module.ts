@@ -1,35 +1,30 @@
-// import { Module } from '@nestjs/common';
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { ConfigModule } from '@nestjs/config';
-// import { AuthModule } from './auth/auth.module';
-// import { UsersModule } from './users/users.module';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
-// @Module({
-//   imports: [
-//     ConfigModule.forRoot({
-//       isGlobal: true,
-//     }),
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
-//     TypeOrmModule.forRoot({
-//       type: 'postgres',
-//       host: process.env.DB_HOST,
-//       port: parseInt(process.env.DB_PORT || '5432'),
-//       username: process.env.DB_USER,
-//       password: process.env.DB_PASS,
-//       database: process.env.DB_NAME,
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
 
-//       autoLoadEntities: true,
-//       synchronize: true,
-//     }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
 
-//     AuthModule,
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
 
-//     UsersModule,
-//   ],
-
-//   controllers: [AppController],
-//   providers: [AppService],
-// })
-// export class AppModule {}
+    AuthModule,
+    UsersModule,
+  ],
+})
+export class AppModule {}
