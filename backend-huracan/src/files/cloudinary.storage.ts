@@ -6,7 +6,7 @@ export const storage = new CloudinaryStorage({
   params: async (req, file) => {
     return {
       folder: 'huracan',
-      resource_type: 'raw',
+      resource_type: 'auto',
       public_id: Date.now() + '-' + file.originalname.split('.')[0],
     };
   },
