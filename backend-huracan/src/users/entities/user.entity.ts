@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { Role } from '../../common/enums/role.enum';
+import { OneToMany } from 'typeorm';
+import { FileEntity } from '../../files/entities/file.entity';
 
 @Entity()
 export class User {
@@ -26,4 +28,7 @@ export class User {
 
   @Column({ default: Role.USER })
   role!: Role;
+
+  @OneToMany(() => FileEntity, (file) => file.user)
+  files!: FileEntity[];
 }

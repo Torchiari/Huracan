@@ -15,25 +15,39 @@ export default function Profile() {
     fetchUser();
   }, []);
 
-  if (!user) return <p>Cargando...</p>;
+  if (!user)
+    return <div className="text-center mt-10 text-gray-500">Cargando...</div>;
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-red-800 mb-6">Mis datos</h1>
+      <div className="bg-white p-6 rounded-2xl shadow-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
+          <div>
+            <p className="text-sm text-gray-500">Nombre</p>
+            <p className="font-medium">{user.name}</p>
+          </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow-md space-y-2">
-        <p>
-          <strong>Nombre:</strong> {user.name}
-        </p>
-        <p>
-          <strong>Apellido:</strong> {user.lastname}
-        </p>
-        <p>
-          <strong>DNI:</strong> {user.dni}
-        </p>
-        <p>
-          <strong>Email:</strong> {user.email}
-        </p>
+          <div>
+            <p className="text-sm text-gray-500">Apellido</p>
+            <p className="font-medium">{user.lastname}</p>
+          </div>
+
+          <div>
+            <p className="text-sm text-gray-500">DNI</p>
+            <p className="font-medium">{user.dni}</p>
+          </div>
+
+          {/* 👇 NUEVO */}
+          <div>
+            <p className="text-sm text-gray-500">Celular</p>
+            <p className="font-medium">{user.phone}</p>
+          </div>
+
+          <div className="sm:col-span-2">
+            <p className="text-sm text-gray-500">Email</p>
+            <p className="font-medium">{user.email}</p>
+          </div>
+        </div>
       </div>
     </div>
   );

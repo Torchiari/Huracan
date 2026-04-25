@@ -4,6 +4,7 @@ import { useState, useContext } from "react";
 import { login } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthContext";
+import { getMe } from "@/services/auth";
 import Link from "next/link";
 
 export default function Login() {
@@ -17,8 +18,9 @@ export default function Login() {
 
     const res = await login({ email, password });
 
-    const payload = JSON.parse(atob(res.access_token.split(".")[1]));
-    setUser(payload);
+    const me = await getMe();
+
+    setUser(me.data);
 
     router.push("/dashboard");
   };
