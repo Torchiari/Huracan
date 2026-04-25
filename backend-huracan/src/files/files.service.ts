@@ -15,18 +15,36 @@ export class FilesService {
   ) {}
 
   async saveFile(file: any, userPayload: any) {
-    const user = await this.userRepo.findOne({
-      where: { id: userPayload.sub },
-    });
+    try {
+      console.log('📦 FILE EN SERVICE:', file);
 
-    const newFile = this.fileRepo.create({
-      filename: file.originalname,
-      path: file.path || file.url,
-      mimetype: file.mimetype,
-      user: user!,
-    });
+      const user = await this.userRepo.findOne({
+        where: { id: userPayload.sub },
+      });
 
-    return this.fileRepo.save(newFile);
+      if (!user) {
+        console.log('❌ USER NO ENCONTRADO');
+        throw new Error('Usuario no encontrado');
+      }
+
+      const newFile = this.fileRepo.create({
+        filename: file.originalname || file.filename,
+        path: file.path || file.url, // 👈 esto está bien
+        mimetype: file.mimetype,
+        user: user,
+      });
+
+      console.log('📝 GUARDANDO:', newFile);
+
+      const saved = await this.fileRepo.save(newFile);
+
+      console.log('✅ GUARDADO OK');
+
+      return saved;
+    } catch (error) {
+      console.log('💥 ERROR EN saveFile:', error);
+      throw error;
+    }
   }
 
   async getUserFiles(userId: number) {

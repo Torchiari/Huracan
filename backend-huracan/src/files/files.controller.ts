@@ -22,6 +22,7 @@ export class FilesController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', { storage }))
   uploadFile(@UploadedFile() file: any, @Req() req) {
+    console.log('FILE RECIBIDO:', file);
     return this.filesService.saveFile(file, req.user);
   }
 
