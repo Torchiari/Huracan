@@ -21,7 +21,7 @@ export class FilesService {
 
     const newFile = this.fileRepo.create({
       filename: file.originalname,
-      path: file.path,
+      path: file.path || file.url,
       mimetype: file.mimetype,
       user: user!,
     });
