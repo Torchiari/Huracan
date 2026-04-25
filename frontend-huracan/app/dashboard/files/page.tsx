@@ -43,6 +43,9 @@ export default function Files() {
     fetchFiles();
   };
 
+  const getViewUrl = (url: string) =>
+    url.replace("/upload/", "/upload/fl_attachment:false/");
+
   return (
     <div>
       <h1 className="text-2xl font-semibold text-red-800 mb-6">
@@ -88,7 +91,7 @@ export default function Files() {
 
                 <div className="flex gap-2 flex-wrap">
                   <a
-                    href={f.path}
+                    href={getViewUrl(f.path)}
                     target="_blank"
                     className="text-sm px-3 py-1 border rounded-full hover:bg-gray-100"
                   >
