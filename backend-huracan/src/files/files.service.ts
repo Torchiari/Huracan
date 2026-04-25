@@ -14,13 +14,13 @@ export class FilesService {
     private userRepo: Repository<User>,
   ) {}
 
-  async saveFile(file: Express.Multer.File, userPayload: any) {
+  async saveFile(file: any, userPayload: any) {
     const user = await this.userRepo.findOne({
       where: { id: userPayload.sub },
     });
 
     const newFile = this.fileRepo.create({
-      filename: file.filename,
+      filename: file.originalname,
       path: file.path,
       mimetype: file.mimetype,
       user: user!,

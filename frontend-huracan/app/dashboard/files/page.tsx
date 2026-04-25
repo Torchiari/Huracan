@@ -88,7 +88,7 @@ export default function Files() {
 
                 <div className="flex gap-2 flex-wrap">
                   <a
-                    href={`http://localhost:3001/uploads/${f.filename}`}
+                    href={f.path}
                     target="_blank"
                     className="text-sm px-3 py-1 border rounded-full hover:bg-gray-100"
                   >

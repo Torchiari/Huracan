@@ -6,32 +6,22 @@ import {
   UploadedFile,
   Req,
   Get,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
 import { AuthGuard } from '@nestjs/passport';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { Delete, Param } from '@nestjs/common';
+import { storage } from './cloudinary.storage';
 
 @Controller('files')
 export class FilesController {
-  constructor(private filesService: FilesService) {}
+  constructor(private readonly filesService: FilesService) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Post('upload')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (_, file, cb) => {
-          const unique = Date.now() + extname(file.originalname);
-          cb(null, unique);
-        },
-      }),
-    }),
-  )
-  uploadFile(@UploadedFile() file: Express.Multer.File, @Req() req) {
+  @UseInterceptors(FileInterceptor('file', { storage }))
+  uploadFile(@UploadedFile() file: any, @Req() req) {
     return this.filesService.saveFile(file, req.user);
   }
 
@@ -41,8 +31,8 @@ export class FilesController {
     return this.filesService.getUserFiles(req.user.sub);
   }
 
-  @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
   deleteFile(@Param('id') id: string, @Req() req) {
     return this.filesService.deleteFile(+id, req.user.sub);
   }
