@@ -44,9 +44,6 @@ export default function Files() {
   };
 
   const getFileUrl = (file: any) => {
-    if (file.mimetype === "application/pdf") {
-      return file.path.replace("/image/upload/", "/raw/upload/");
-    }
     return file.path;
   };
 
@@ -95,7 +92,7 @@ export default function Files() {
 
                 <div className="flex gap-2 flex-wrap">
                   <a
-                    href={getFileUrl(f)}
+                    href={f.path}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm px-3 py-1 border rounded-full text-black hover:bg-gray-100"

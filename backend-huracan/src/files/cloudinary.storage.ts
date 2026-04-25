@@ -7,7 +7,7 @@ export const storage = new CloudinaryStorage({
     return {
       folder: 'huracan',
       resource_type: 'auto',
-      public_id: Date.now() + '-' + file.originalname.split('.')[0],
+      public_id: Date.now() + '-' + file.originalname,
     };
   },
 });
