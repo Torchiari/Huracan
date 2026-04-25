@@ -98,7 +98,7 @@ export default function Files() {
                     href={getFileUrl(f)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm px-3 py-1 border rounded-full hover:bg-gray-100"
+                    className="text-sm px-3 py-1 border rounded-full text-black hover:bg-gray-100"
                   >
                     Ver
                   </a>
