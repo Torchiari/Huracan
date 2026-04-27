@@ -15,7 +15,7 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    router.push("/");
+    router.replace("/");
   };
 
   return (

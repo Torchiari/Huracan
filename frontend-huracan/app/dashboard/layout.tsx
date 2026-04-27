@@ -24,7 +24,7 @@ export default function DashboardLayout({
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    router.push("/");
+    router.replace("/");
   };
 
   if (!user) return null;

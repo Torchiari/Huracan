@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { uploadFile, getMyFiles, deleteFile } from "@/services/files";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function Files() {
+  const { user } = useContext(AuthContext);
   const [file, setFile] = useState<File | null>(null);
   const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const fetchFiles = async () => {
     try {
@@ -18,8 +23,13 @@ export default function Files() {
   };
 
   useEffect(() => {
-    fetchFiles();
-  }, []);
+    if (user) {
+      setFiles([]);
+      fetchFiles();
+    } else {
+      setFiles([]);
+    }
+  }, [user]);
 
   const handleUpload = async () => {
     if (!file) return alert("Seleccioná un archivo");
@@ -29,6 +39,11 @@ export default function Files() {
     try {
       await uploadFile(file);
       setFile(null);
+
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+
       fetchFiles();
     } catch {
       alert("Error al subir archivo");
@@ -43,10 +58,6 @@ export default function Files() {
     fetchFiles();
   };
 
-  const getFileUrl = (file: any) => {
-    return file.path;
-  };
-
   return (
     <div>
       <h1 className="text-2xl font-semibold text-red-800 mb-6">
@@ -55,20 +66,36 @@ export default function Files() {
 
       {/* UPLOAD */}
       <div className="bg-white p-6 rounded-2xl shadow-md space-y-4 mb-6">
-        <input
-          type="file"
-          accept=".pdf,image/*"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 text-black"
-        />
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <input
+            ref={inputRef}
+            type="file"
+            accept=".pdf,image/*"
+            id="fileUpload"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            className="hidden"
+          />
 
-        <button
-          onClick={handleUpload}
-          disabled={loading}
-          className="w-full sm:w-auto bg-red-800 text-white px-6 py-2 rounded-full hover:bg-red-900 transition disabled:opacity-50"
-        >
-          {loading ? "Subiendo..." : "Subir archivo"}
-        </button>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="bg-gray-200 text-black px-5 py-2 rounded-full hover:bg-gray-300 transition"
+          >
+            Elegir archivo
+          </button>
+
+          <div className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-gray-600 text-sm truncate">
+            {file ? file.name : "No se ha seleccionado ningún archivo"}
+          </div>
+
+          <button
+            onClick={handleUpload}
+            disabled={loading}
+            className="bg-red-800 text-white px-6 py-2 rounded-full hover:bg-red-900 transition disabled:opacity-50"
+          >
+            {loading ? "Subiendo..." : "Subir archivo"}
+          </button>
+        </div>
       </div>
 
       {/* LISTADO */}
