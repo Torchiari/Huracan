@@ -14,17 +14,16 @@ import { FilesModule } from './files/files.module';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      // host: process.env.DB_HOST,
-      // port: parseInt(process.env.DB_PORT || '5432'),
-      // username: process.env.DB_USER,
-      // password: process.env.DB_PASS,
-      // database: process.env.DB_NAME,
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || '5432'),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
-      ssl: {
-        rejectUnauthorized: false,
-      },
+      ssl:
+        process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     }),
 
     AuthModule,

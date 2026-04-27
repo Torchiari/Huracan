@@ -15,29 +15,80 @@ export default function Register() {
     confirmPassword: "",
   });
 
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    const { name, value } = e.target;
 
-  const handleSubmit = async (e?: any) => {
-    if (e) e.preventDefault();
-
-    if (form.password !== form.confirmPassword) {
-      alert("Las contraseñas no coinciden");
+    if (name === "dni" || name === "phone") {
+      const onlyNumbers = value.replace(/\D/g, "");
+      setForm({ ...form, [name]: onlyNumbers });
       return;
     }
 
-    const { confirmPassword, ...data } = form;
+    setForm({ ...form, [name]: value });
+  };
 
-    await register(data);
+  const validateEmail = (email: string) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
 
-    setSuccess(true);
+  const isFormValid =
+    form.name &&
+    form.lastname &&
+    form.dni &&
+    form.phone &&
+    form.email &&
+    form.password &&
+    form.confirmPassword;
 
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 2000);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess(false);
+
+    if (!isFormValid) {
+      setError("Todos los campos son obligatorios");
+      return;
+    }
+
+    if (!validateEmail(form.email)) {
+      setError("Ingresá un email válido");
+      return;
+    }
+
+    if (form.password.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setError("Las contraseñas no coinciden");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const { confirmPassword, ...data } = form;
+
+      await register(data);
+
+      setSuccess(true);
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.message || "No se pudo registrar el usuario",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,91 +106,80 @@ export default function Register() {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm text-black mb-1">Nombre</label>
-            <input
-              name="name"
-              placeholder="Ingrese su nombre"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            name="name"
+            placeholder="Nombre"
+            value={form.name}
+            onChange={handleChange}
+            className="input"
+          />
 
-          <div>
-            <label className="block text-sm text-black mb-1">Apellido</label>
-            <input
-              name="lastname"
-              placeholder="Ingrese su apellido"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            name="lastname"
+            placeholder="Apellido"
+            value={form.lastname}
+            onChange={handleChange}
+            className="input"
+          />
 
-          <div>
-            <label className="block text-sm text-black mb-1">DNI</label>
-            <input
-              name="dni"
-              placeholder="Ingrese su DNI"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            name="dni"
+            placeholder="DNI"
+            value={form.dni}
+            onChange={handleChange}
+            className="input"
+          />
 
-          <div>
-            <label className="block text-sm text-black mb-1">Celular</label>
-            <input
-              name="phone"
-              placeholder="Ingrese su número de celular"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            name="phone"
+            placeholder="Celular"
+            value={form.phone}
+            onChange={handleChange}
+            className="input"
+          />
 
-          <div>
-            <label className="block text-sm text-black mb-1">Email</label>
-            <input
-              name="email"
-              placeholder="Ingrese su email"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            className="input"
+          />
 
-          <div>
-            <label className="block text-sm text-black mb-1">Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Ingrese su contraseña"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            value={form.password}
+            onChange={handleChange}
+            className="input"
+          />
 
-          <div>
-            <label className="block text-sm text-black mb-1">
-              Confirmar contraseña
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirmar contraseña"
-              onChange={handleChange}
-              className="input"
-            />
-          </div>
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirmar contraseña"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            className="input"
+          />
 
           <button
             type="submit"
-            className="w-full mt-6 bg-red-800 text-white py-2 rounded-full hover:bg-red-900 transition"
+            disabled={loading}
+            className="w-full mt-4 bg-red-800 text-white py-2 rounded-full hover:bg-red-900 transition disabled:opacity-50"
           >
-            Registrarse
+            {loading ? "Registrando..." : "Registrarse"}
           </button>
         </form>
 
+        {error && (
+          <p className="text-red-600 text-sm mt-4 text-center">{error}</p>
+        )}
+
         {success && (
           <p className="text-green-600 text-sm mt-4 text-center">
-            Cuenta creada con éxito ✔
+            Cuenta creada con éxito ✔ Redirigiendo...
           </p>
         )}
 

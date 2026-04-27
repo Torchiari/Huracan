@@ -16,8 +16,23 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return this.usersRepository.findOne({ where: { email } });
+    return this.usersRepository.findOne({
+      where: { email },
+    });
   }
+
+  async findByDni(dni: string) {
+    return this.usersRepository.findOne({
+      where: { dni },
+    });
+  }
+
+  async findByPhone(phone: string) {
+    return this.usersRepository.findOne({
+      where: { phone },
+    });
+  }
+
   async findOne(id: number) {
     return this.usersRepository.findOneBy({ id });
   }
