@@ -37,78 +37,89 @@ export default function DashboardLayout({
     }`;
 
   return (
-    <div className="min-h-screen flex bg-[#f8f7f4]">
-      {/* SIDEBAR */}
-      <aside
-        className={`bg-white w-64 p-6 shadow-md fixed md:static h-full z-50 transition-transform ${
-          open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        }`}
-      >
-        <h2 className="text-xl font-semibold text-red-800 mb-8">
-          Panel usuario
-        </h2>
+    <div className="relative min-h-screen flex">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/fondo-dashboard.png')",
+        }}
+      />
 
-        <nav className="flex flex-col gap-3 text-sm">
-          <Link
-            href="/dashboard"
-            className={linkClass("/dashboard")}
-            onClick={() => setOpen(false)}
-          >
-            <FaHome /> Inicio
-          </Link>
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 
-          <Link
-            href="/dashboard/profile"
-            className={linkClass("/dashboard/profile")}
-            onClick={() => setOpen(false)}
-          >
-            <FaUser /> Mis datos
-          </Link>
+      <div className="relative flex w-full">
+        {/* SIDEBAR */}
+        <aside
+          className={`bg-white w-64 p-6 shadow-md fixed md:static h-full z-50 transition-transform ${
+            open ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }`}
+        >
+          <h2 className="text-xl font-semibold text-red-800 mb-8">
+            Panel usuario
+          </h2>
 
-          <Link
-            href="/dashboard/files"
-            className={linkClass("/dashboard/files")}
-            onClick={() => setOpen(false)}
-          >
-            <FaFileAlt /> Certificados
-          </Link>
-        </nav>
+          <nav className="flex flex-col gap-3 text-sm">
+            <Link
+              href="/dashboard"
+              className={linkClass("/dashboard")}
+              onClick={() => setOpen(false)}
+            >
+              <FaHome /> Inicio
+            </Link>
 
-        <div className="mt-10">
-          <button
-            onClick={logout}
-            className="flex items-center gap-2 text-red-700 hover:text-red-900 transition text-sm"
-          >
-            <FaSignOutAlt /> Cerrar sesión
-          </button>
-        </div>
-      </aside>
+            <Link
+              href="/dashboard/profile"
+              className={linkClass("/dashboard/profile")}
+              onClick={() => setOpen(false)}
+            >
+              <FaUser /> Mis datos
+            </Link>
 
-      {/* CONTENIDO */}
-      <div className="flex-1 flex flex-col">
-        {/* HEADER */}
-        <header className="bg-white shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden text-2xl font-bold text-black"
-          >
-            ☰
-          </button>
+            <Link
+              href="/dashboard/files"
+              className={linkClass("/dashboard/files")}
+              onClick={() => setOpen(false)}
+            >
+              <FaFileAlt /> Certificados
+            </Link>
+          </nav>
 
-          <div className="flex flex-col md:flex-row md:items-center md:gap-2">
-            <span className="text-2xl font-semibold text-red-800">
-              Perfil de usuario de:
-            </span>
-
-            {user && (
-              <span className="text-2xl font-semibold text-black">
-                {user.name} {user.lastname}
-              </span>
-            )}
+          <div className="mt-10">
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 text-red-700 hover:text-red-900 transition text-sm"
+            >
+              <FaSignOutAlt /> Cerrar sesión
+            </button>
           </div>
-        </header>
-        {/* MAIN */}
-        <main className="p-4 md:p-6 flex-1">{children}</main>
+        </aside>
+
+        {/* CONTENIDO */}
+        <div className="flex-1 flex flex-col">
+          {/* HEADER */}
+          <header className="bg-white shadow-sm px-4 md:px-6 py-4 flex items-center justify-between">
+            {/* <button
+              onClick={() => setOpen(!open)}
+              className="md:hidden text-2xl font-bold text-black"
+            >
+              ☰
+            </button> */}
+
+            <div className="flex flex-col md:flex-row md:items-center md:gap-2">
+              <span className="text-2xl font-semibold text-red-800">
+                Perfil de usuario de:
+              </span>
+
+              {user && (
+                <span className="text-2xl font-semibold text-black">
+                  {user.name} {user.lastname}
+                </span>
+              )}
+            </div>
+          </header>
+          {/* MAIN */}
+          <main className="p-4 md:p-6 flex-1">{children}</main>
+        </div>
       </div>
     </div>
   );

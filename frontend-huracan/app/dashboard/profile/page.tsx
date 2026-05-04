@@ -20,7 +20,8 @@ export default function Profile() {
 
   return (
     <div>
-      <div className="bg-white p-6 rounded-2xl shadow-md">
+      <h1 className="text-2xl font-semibold text-white mb-6">Mis datos</h1>
+      <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-md">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-700">
           <div>
             <p className="text-sm text-gray-500">Nombre</p>
@@ -37,7 +38,6 @@ export default function Profile() {
             <p className="font-medium">{user.dni}</p>
           </div>
 
-          {/* 👇 NUEVO */}
           <div>
             <p className="text-sm text-gray-500">Celular</p>
             <p className="font-medium">{user.phone}</p>

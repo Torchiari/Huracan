@@ -4,11 +4,11 @@ import { FaUser, FaFileAlt, FaHeartbeat } from "react-icons/fa";
 export default function DashboardHome() {
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-red-800 mb-6">Dashboard</h1>
+      <h1 className="text-2xl font-semibold text-white mb-6">Inicio</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
         <Link href="/dashboard/profile">
-          <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer">
+          <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer">
             <div className="text-red-800 text-xl mb-2">
               <FaUser />
             </div>
@@ -21,7 +21,7 @@ export default function DashboardHome() {
         </Link>
 
         <Link href="/dashboard/files">
-          <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer">
+          <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer">
             <div className="text-red-800 text-xl mb-2">
               <FaFileAlt />
             </div>
@@ -31,7 +31,7 @@ export default function DashboardHome() {
           </div>
         </Link>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md opacity-70">
+        <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-md opacity-70">
           <div className="text-red-800 text-xl mb-2">
             <FaHeartbeat />
           </div>

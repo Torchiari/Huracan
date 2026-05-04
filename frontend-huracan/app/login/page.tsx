@@ -22,7 +22,11 @@ export default function Login() {
 
     setUser(me.data);
 
-    router.push("/dashboard");
+    if (me.data.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/dashboard");
+    }
   };
 
   return (

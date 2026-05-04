@@ -29,7 +29,7 @@ export class FilesService {
 
       const newFile = this.fileRepo.create({
         filename: file.originalname || file.filename,
-        path: file.path || file.url, // 👈 esto está bien
+        path: file.path || file.url,
         mimetype: file.mimetype,
         user: user,
       });

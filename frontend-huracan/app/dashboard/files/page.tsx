@@ -60,7 +60,7 @@ export default function Files() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-red-800 mb-6">
+      <h1 className="text-2xl font-semibold text-white mb-6">
         Certificados médicos
       </h1>
 

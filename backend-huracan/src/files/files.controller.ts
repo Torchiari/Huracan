@@ -29,12 +29,13 @@ export class FilesController {
   @UseGuards(AuthGuard('jwt'))
   @Get('my-files')
   getMyFiles(@Req() req) {
-    return this.filesService.getUserFiles(req.user.sub);
+    console.log('OBTENIENDO ARCHIVOS PARA USER ID:', req.user.id);
+    return this.filesService.getUserFiles(req.user.id);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   deleteFile(@Param('id') id: string, @Req() req) {
-    return this.filesService.deleteFile(+id, req.user.sub);
+    return this.filesService.deleteFile(+id, req.user.id);
   }
 }

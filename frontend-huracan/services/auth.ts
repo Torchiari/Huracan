@@ -2,8 +2,6 @@ import axios from "axios";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-// const API = "http://localhost:3001";
-
 export const login = async (data: any) => {
   const res = await axios.post(`${API}/auth/login`, data);
   localStorage.setItem("token", res.data.access_token);

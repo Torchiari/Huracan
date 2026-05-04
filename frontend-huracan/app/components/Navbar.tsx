@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useContext, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { User } from "lucide-react";
+import { Home, User, FileText, Shield, LogOut } from "lucide-react";
 
 export default function Navbar() {
   const { user, setUser } = useContext(AuthContext);
@@ -16,6 +16,16 @@ export default function Navbar() {
     localStorage.removeItem("token");
     setUser(null);
     router.replace("/");
+  };
+
+  const handleProfileClick = () => {
+    if (!user) return;
+
+    if (user.role === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/dashboard/profile");
+    }
   };
 
   return (
@@ -40,13 +50,13 @@ export default function Navbar() {
           </Link>
 
           {user && (
-            <Link
-              href="/dashboard/profile"
+            <button
+              onClick={handleProfileClick}
               className="flex items-center gap-2 hover:text-black transition"
             >
               <User size={20} />
               Mi Perfil
-            </Link>
+            </button>
           )}
 
           {!user ? (
@@ -75,50 +85,184 @@ export default function Navbar() {
         {/* HAMBURGUESA */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden flex flex-col gap-1"
+          className="md:hidden relative w-8 h-8 flex flex-col justify-center items-center"
         >
-          <span className="w-6 h-[2px] bg-gray-700"></span>
-          <span className="w-6 h-[2px] bg-gray-700"></span>
-          <span className="w-6 h-[2px] bg-gray-700"></span>
+          <span
+            className={`absolute w-6 h-[2px] bg-gray-800 transition-all duration-300 ${
+              menuOpen ? "rotate-45" : "-translate-y-2"
+            }`}
+          />
+          <span
+            className={`absolute w-6 h-[2px] bg-gray-800 transition-all duration-300 ${
+              menuOpen ? "opacity-100" : "opacity-100"
+            }`}
+          />
+          <span
+            className={`absolute w-6 h-[2px] bg-gray-800 transition-all duration-300 ${
+              menuOpen ? "-rotate-45" : "translate-y-2"
+            }`}
+          />
         </button>
       </div>
 
-      {/* MOBILE MENU */}
-      {menuOpen && (
-        <div className="md:hidden px-6 pb-4 flex flex-col gap-4 text-gray-700 text-sm">
-          <Link href="/" onClick={() => setMenuOpen(false)}>
-            Inicio
-          </Link>
+      {/* MOBILE DRAWER ROOT */}
+      <div className="fixed top-0 left-0 w-full h-screen z-[9999] md:hidden pointer-events-none">
+        <div
+          className={`absolute top-0 right-0 h-full w-[85%] max-w-sm 
+    bg-white/95 backdrop-blur-xl shadow-2xl 
+    border-l border-gray-200
+    transform transition-transform duration-300 ease-in-out 
+    pointer-events-auto
+    ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+        >
+          {/* HEADER */}
+          <div className="px-5 py-4 border-b flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-xs text-gray-500 uppercase tracking-wider">
+                Huracán Ciclista Club
+              </span>
+              <span className="text-lg font-bold text-red-800">Menú</span>
+            </div>
 
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="text-2xl text-gray-500 hover:text-black transition"
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* USER INFO */}
           {user && (
-            <Link href="/dashboard/profile" onClick={() => setMenuOpen(false)}>
-              Mi Perfil
-            </Link>
+            <div className="px-5 py-4 border-b flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-800 text-white flex items-center justify-center font-bold">
+                {user.name?.[0]}
+              </div>
+
+              <div>
+                <p className="text-sm font-semibold text-gray-800">
+                  {user.name} {user.lastname}
+                </p>
+                <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+              </div>
+            </div>
           )}
 
-          {!user ? (
-            <>
-              <Link href="/login" onClick={() => setMenuOpen(false)}>
-                Iniciar sesión
-              </Link>
-
-              <Link href="/register" onClick={() => setMenuOpen(false)}>
-                Registrarse
-              </Link>
-            </>
-          ) : (
+          {/* MENU */}
+          <div className="flex flex-col gap-2 p-4 text-sm">
+            {/* ITEM */}
             <button
               onClick={() => {
-                handleLogout();
+                router.push("/");
                 setMenuOpen(false);
               }}
-              className="text-left"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl 
+        hover:bg-gray-100 text-gray-700 transition group"
             >
-              Cerrar sesión
+              <Home
+                size={18}
+                className="text-red-700 group-hover:scale-110 transition"
+              />
+              Inicio
             </button>
-          )}
+
+            {user && (
+              <>
+                <button
+                  onClick={() => {
+                    handleProfileClick();
+                    setMenuOpen(false);
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl 
+            hover:bg-gray-100 text-gray-700 transition group"
+                >
+                  <User
+                    size={18}
+                    className="text-red-700 group-hover:scale-110 transition"
+                  />
+                  Mi Perfil
+                </button>
+
+                {user.role !== "admin" && (
+                  <button
+                    onClick={() => {
+                      router.push("/dashboard/files");
+                      setMenuOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl 
+              hover:bg-gray-100 text-gray-700 transition group"
+                  >
+                    <FileText
+                      size={18}
+                      className="text-red-700 group-hover:scale-110 transition"
+                    />
+                    Certificados
+                  </button>
+                )}
+
+                {user.role === "admin" && (
+                  <button
+                    onClick={() => {
+                      router.push("/admin");
+                      setMenuOpen(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl 
+              hover:bg-gray-100 text-gray-700 transition group"
+                  >
+                    <Shield
+                      size={18}
+                      className="text-red-700 group-hover:scale-110 transition"
+                    />
+                    Panel Administrador
+                  </button>
+                )}
+
+                <div className="border-t my-3"></div>
+
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMenuOpen(false);
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl 
+            text-red-700 hover:bg-red-50 transition group"
+                >
+                  <LogOut
+                    size={18}
+                    className="group-hover:scale-110 transition"
+                  />
+                  Cerrar sesión
+                </button>
+              </>
+            )}
+
+            {!user && (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100"
+                >
+                  Iniciar sesión
+                </Link>
+
+                <Link
+                  href="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-100"
+                >
+                  Registrarse
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* FOOTER */}
+          <div className="mt-auto p-4 text-xs text-gray-400 text-center border-t">
+            © Huracán Club
+          </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
