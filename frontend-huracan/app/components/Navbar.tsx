@@ -22,7 +22,7 @@ export default function Navbar() {
     if (!user) return;
 
     if (user.role === "admin") {
-      router.push("/admin");
+      router.push("/dashboard");
     } else {
       router.push("/dashboard/profile");
     }
@@ -153,7 +153,13 @@ export default function Navbar() {
             {/* ITEM */}
             <button
               onClick={() => {
-                router.push("/");
+                if (!user) {
+                  router.push("/");
+                } else if (user.role === "admin") {
+                  router.push("/");
+                } else {
+                  router.push("/dashboard");
+                }
                 setMenuOpen(false);
               }}
               className="flex items-center gap-3 px-4 py-3 rounded-xl 
@@ -180,7 +186,7 @@ export default function Navbar() {
                     size={18}
                     className="text-red-700 group-hover:scale-110 transition"
                   />
-                  Mi Perfil
+                  Mis datos
                 </button>
 
                 {user.role !== "admin" && (
