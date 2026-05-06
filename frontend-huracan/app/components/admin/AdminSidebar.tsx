@@ -8,28 +8,35 @@ export default function AdminSidebar() {
 
   const links = [
     { name: "Dashboard", href: "/admin" },
-    { name: "Usuarios", href: "/admin/users" },
+    { name: "Usuarios", href: "/admin" },
+    { name: "Panel Administrador", href: "/admin" },
   ];
 
   return (
-    <aside className="hidden md:block bg-white/90 backdrop-blur-md w-64 p-6 shadow-md">
-      <h1 className="text-3xl font-bold text-red-600 mb-10">Huracán Club</h1>
+    <aside className="hidden md:flex flex-col w-64 h-screen bg-black/60 backdrop-blur-xl border-r border-white/10 p-6">
+      <h1 className="text-2xl font-bold text-white mb-10">Huracán Club</h1>
 
-      <nav className="space-y-3">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={`block px-4 py-3 rounded-xl transition ${
-              pathname === link.href ? "bg-red-600" : "hover:bg-gray-800"
-            }`}
-          >
-            {link.name}
-          </Link>
-        ))}
+      <nav className="flex flex-col gap-3">
+        {links.map((link) => {
+          const active = pathname === link.href;
+
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`px-4 py-3 rounded-xl transition ${
+                active
+                  ? "bg-red-600 text-white"
+                  : "text-gray-300 hover:bg-white/10"
+              }`}
+            >
+              {link.name}
+            </Link>
+          );
+        })}
       </nav>
 
-      <div className="mt-16 text-sm text-gray-400">Panel Administrador</div>
+      <div className="mt-auto text-xs text-gray-400">Panel Administrador</div>
     </aside>
   );
 }

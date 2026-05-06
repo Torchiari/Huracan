@@ -12,7 +12,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
 import { AuthGuard } from '@nestjs/passport';
-import { storage } from './cloudinary.storage';
 
 @Controller('files')
 export class FilesController {
@@ -20,16 +19,14 @@ export class FilesController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file', { storage }))
+  @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: any, @Req() req) {
-    console.log('FILE RECIBIDO:', file);
     return this.filesService.saveFile(file, req.user);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('my-files')
   getMyFiles(@Req() req) {
-    console.log('OBTENIENDO ARCHIVOS PARA USER ID:', req.user.id);
     return this.filesService.getUserFiles(req.user.id);
   }
 

@@ -21,6 +21,7 @@ export class AdminService {
   findOne(id: number) {
     return this.userRepo.findOne({
       where: { id },
+      relations: ['files'],
     });
   }
 

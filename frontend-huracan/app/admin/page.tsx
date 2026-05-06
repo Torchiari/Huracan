@@ -1,12 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import UsersTable from "@/app/components/admin/UsersTable";
 import { getUsers } from "@/services/admin";
+import UsersTable from "@/app/components/admin/UsersTable";
+import { useRouter } from "next/navigation";
+import { getMe } from "@/services/auth";
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    checkAdmin();
+  }, []);
+
+  const checkAdmin = async () => {
+    try {
+      const res = await getMe();
+
+      if (res.data.role !== "admin") {
+        router.push("/dashboard");
+      }
+    } catch {
+      router.push("/login");
+    }
+  };
 
   useEffect(() => {
     loadUsers();
@@ -24,17 +43,22 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-white">Usuarios del Club</h1>
+    <div className="text-white">
+      {/* 🔴 HEADER */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Panel de Administrador</h1>
+      </div>
 
+      {/* 🔍 BUSCADOR */}
       <input
         type="text"
-        placeholder="Buscar usuario..."
+        placeholder="Buscar por nombre o email..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="w-full mb-6 px-4 py-2 rounded-lg"
+        className="w-full max-w-xl mb-6 px-4 py-3 rounded-xl bg-white text-black shadow"
       />
 
+      {/* 📋 LISTA */}
       <UsersTable users={filteredUsers} />
     </div>
   );

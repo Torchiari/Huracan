@@ -15,6 +15,9 @@ export class FileEntity {
   @Column()
   mimetype!: string;
 
+  @Column({ nullable: true })
+  type!: string;
+
   @ManyToOne(() => User, (user) => user.files, { onDelete: 'CASCADE' })
   user!: User;
 }
