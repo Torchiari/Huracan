@@ -4,6 +4,8 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { Strategy } from 'passport-custom';
 
+import { Request } from 'express';
+
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -12,12 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super();
   }
 
-  async validate(req: any) {
+  async validate(req: Request) {
     try {
       const authHeader = req.headers.authorization;
 
       if (!authHeader) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Token no enviado');
       }
 
       const token = authHeader.replace('Bearer ', '');
@@ -33,14 +35,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       const user = await this.usersService.findOne(payload.sub as string);
 
       if (!user) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Usuario no encontrado');
       }
 
       return user;
     } catch (error) {
-      console.log('JWT ERROR:', error);
+      console.log('JWT VERIFY ERROR:', error);
 
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Token inválido');
     }
   }
 }
