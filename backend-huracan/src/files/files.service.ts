@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from './entities/file.entity';
 import { Repository } from 'typeorm';
@@ -15,7 +20,7 @@ export class FilesService {
     private userRepo: Repository<User>,
   ) {}
 
-  async saveFile(file: any, user: any) {
+  async saveFile(file: any, user: User) {
     const fileName = `${Date.now()}-${file.originalname}`;
 
     const { error } = await supabase.storage
@@ -24,56 +29,83 @@ export class FilesService {
         contentType: file.mimetype,
       });
 
-    if (error) throw new Error(error.message);
-
-    const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/files/${fileName}`;
+    if (error) {
+      throw new Error(error.message);
+    }
 
     const newFile = this.fileRepo.create({
       filename: file.originalname,
-      path: publicUrl,
+      path: fileName,
       mimetype: file.mimetype,
       type: 'certificado',
-      user: user,
+      user,
     });
 
-    return await this.fileRepo.save(newFile);
+    return this.fileRepo.save(newFile);
   }
 
-  async getUserFiles(userId: number) {
-    return this.fileRepo.find({
-      where: { user: { id: userId } },
+  async getSignedUrl(path: string) {
+    const { data, error } = await supabase.storage
+      .from('files')
+      .createSignedUrl(path, 60 * 10);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data.signedUrl;
+  }
+
+  async getUserFiles(userId: string) {
+    const files = await this.fileRepo.find({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
     });
+
+    const filesWithUrls = await Promise.all(
+      files.map(async (file) => {
+        const signedUrl = await this.getSignedUrl(file.path);
+
+        return {
+          ...file,
+          signedUrl,
+        };
+      }),
+    );
+
+    return filesWithUrls;
   }
 
-  async deleteFile(id: number, userId: number) {
+  async deleteFile(id: string, userId: string) {
     const file = await this.fileRepo.findOne({
       where: { id },
       relations: ['user'],
     });
 
     if (!file) {
-      throw new Error('Archivo no encontrado');
+      throw new NotFoundException('Archivo no encontrado');
     }
 
-    try {
-      const fileName = file.path.split('/').pop();
-      if (!fileName) {
-        throw new Error('No se pudo obtener el nombre del archivo');
-      }
+    const isOwner = file.user.id === userId;
+    const isAdmin = file.user.role === 'admin';
 
-      const { error } = await supabase.storage.from('files').remove([fileName]);
-
-      if (error) {
-        console.log('Error eliminando de supabase:', error.message);
-        throw new Error(error.message);
-      }
-
-      await this.fileRepo.remove(file);
-
-      return { message: 'Archivo eliminado correctamente' };
-    } catch (error) {
-      console.log('💥 ERROR DELETE:', error);
-      throw error;
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException('No autorizado');
     }
+
+    const { error } = await supabase.storage.from('files').remove([file.path]);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    await this.fileRepo.remove(file);
+
+    return {
+      message: 'Archivo eliminado correctamente',
+    };
   }
 }

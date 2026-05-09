@@ -33,7 +33,7 @@ export class UsersService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     return this.usersRepository.findOne({
       where: { id },
       relations: ['files'],

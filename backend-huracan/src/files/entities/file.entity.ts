@@ -1,10 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
+
 import { User } from '../../users/entities/user.entity';
 
-@Entity()
+@Entity('file_entity')
 export class FileEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   filename!: string;
@@ -18,6 +25,11 @@ export class FileEntity {
   @Column({ nullable: true })
   type!: string;
 
-  @ManyToOne(() => User, (user) => user.files, { onDelete: 'CASCADE' })
+  @CreateDateColumn()
+  created_at!: Date;
+
+  @ManyToOne(() => User, (user) => user.files, {
+    onDelete: 'CASCADE',
+  })
   user!: User;
 }

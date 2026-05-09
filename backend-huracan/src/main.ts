@@ -1,16 +1,27 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
+import { ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
+  app.use(helmet());
+
+  app.enableCors({
+    origin: ['http://localhost:3000', 'https://www.huracanciclista.com.ar'],
+    credentials: true,
   });
 
-  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
   await app.listen(process.env.PORT ?? 3001);
 }
+
 bootstrap();

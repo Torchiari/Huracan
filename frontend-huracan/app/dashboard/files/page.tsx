@@ -119,7 +119,7 @@ export default function Files() {
 
                 <div className="flex gap-2 flex-wrap">
                   <a
-                    href={f.path}
+                    href={f.signedUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm px-3 py-1 border rounded-full text-black hover:bg-gray-100"

@@ -1,19 +1,17 @@
 import {
   Injectable,
-  UnauthorizedException,
   BadRequestException,
+  UnauthorizedException,
 } from '@nestjs/common';
+
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { supabase } from '../config/supabase';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { Role } from '../common/enums/role.enum';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   async register(dto: CreateUserDto) {
     const emailExists = await this.usersService.findByEmail(dto.email);
@@ -34,40 +32,48 @@ export class AuthService {
       throw new BadRequestException('El celular ya está registrado');
     }
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
-
-    const user = await this.usersService.create({
-      ...dto,
-      password: hashedPassword,
+    const { data, error } = await supabase.auth.signUp({
+      email: dto.email,
+      password: dto.password,
     });
 
-    const { password: _, ...result } = user;
-    return result;
+    if (error) {
+      throw new BadRequestException(error.message);
+    }
+
+    const user = await this.usersService.create({
+      id: data.user?.id,
+      name: dto.name,
+      lastname: dto.lastname,
+      dni: dto.dni,
+      phone: dto.phone,
+      email: dto.email,
+      role: Role.USER,
+    });
+
+    return {
+      message: 'Usuario registrado correctamente',
+      user,
+    };
   }
 
   async login(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado');
+    console.log('SUPABASE LOGIN DATA:', data);
+    console.log('SUPABASE LOGIN ERROR:', error);
+
+    if (error) {
+      throw new UnauthorizedException(error.message);
     }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      throw new UnauthorizedException('Contraseña incorrecta');
-    }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-      lastname: user.lastname,
-    };
 
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token,
+      user: data.user,
     };
   }
 }

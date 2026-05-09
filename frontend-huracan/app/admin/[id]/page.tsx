@@ -132,7 +132,7 @@ export default function UserDetailPage() {
 
                   <div className="flex gap-3 text-sm">
                     <a
-                      href={file.path}
+                      href={file.signedUrl}
                       target="_blank"
                       className="text-blue-600 hover:underline"
                     >
@@ -140,7 +140,9 @@ export default function UserDetailPage() {
                     </a>
 
                     <button
-                      onClick={() => handleDownload(file.path, file.filename)}
+                      onClick={() =>
+                        handleDownload(file.signedUrl, file.filename)
+                      }
                       className="text-green-600 hover:underline"
                     >
                       Descargar
@@ -169,7 +171,7 @@ export default function UserDetailPage() {
 
                 <div className="flex gap-3 text-sm">
                   <a
-                    href={ficha.path}
+                    href={ficha.signedUrl}
                     target="_blank"
                     className="text-blue-600 hover:underline"
                   >
@@ -177,7 +179,7 @@ export default function UserDetailPage() {
                   </a>
 
                   <a
-                    href={ficha.path}
+                    href={ficha.signedUrl}
                     download
                     className="text-green-600 hover:underline"
                   >

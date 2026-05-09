@@ -1,12 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryColumn,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
+
 import { Role } from '../../common/enums/role.enum';
-import { OneToMany } from 'typeorm';
 import { FileEntity } from '../../files/entities/file.entity';
 
-@Entity()
+@Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryColumn('uuid')
+  id!: string;
 
   @Column()
   name!: string;
@@ -23,11 +29,15 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
-  @Column()
-  password!: string;
-
-  @Column({ default: Role.USER })
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.USER,
+  })
   role!: Role;
+
+  @CreateDateColumn()
+  created_at!: Date;
 
   @OneToMany(() => FileEntity, (file) => file.user)
   files!: FileEntity[];

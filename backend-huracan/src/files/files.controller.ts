@@ -9,6 +9,7 @@ import {
   Delete,
   Param,
 } from '@nestjs/common';
+
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -33,6 +34,6 @@ export class FilesController {
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   deleteFile(@Param('id') id: string, @Req() req) {
-    return this.filesService.deleteFile(+id, req.user.id);
+    return this.filesService.deleteFile(id, req.user.id);
   }
 }
