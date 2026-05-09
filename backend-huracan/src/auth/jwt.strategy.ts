@@ -19,10 +19,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       const authHeader = req.headers.authorization;
 
       if (!authHeader) {
-        throw new UnauthorizedException('Token no enviado');
+        throw new UnauthorizedException('No token');
       }
 
-      const token = authHeader.replace('Bearer ', '');
+      const token = authHeader.split(' ')[1];
 
       const { createRemoteJWKSet, jwtVerify } = await import('jose');
 
@@ -35,14 +35,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       const user = await this.usersService.findOne(payload.sub as string);
 
       if (!user) {
-        throw new UnauthorizedException('Usuario no encontrado');
+        throw new UnauthorizedException('User not found');
       }
 
       return user;
-    } catch (error) {
-      console.log('JWT VERIFY ERROR:', error);
+    } catch (err) {
+      console.log('JWT STRATEGY ERROR:', err);
 
-      throw new UnauthorizedException('Token inválido');
+      throw new UnauthorizedException();
     }
   }
 }
