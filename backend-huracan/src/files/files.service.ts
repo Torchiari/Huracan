@@ -10,6 +10,8 @@ import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { supabase } from '../config/supabase';
 
+('certificado');
+
 @Injectable()
 export class FilesService {
   constructor(
@@ -20,7 +22,7 @@ export class FilesService {
     private userRepo: Repository<User>,
   ) {}
 
-  async saveFile(file: any, user: User) {
+  async saveFile(file: any, user: User, type: string) {
     const fileName = `${Date.now()}-${file.originalname}`;
 
     const { error } = await supabase.storage
@@ -33,11 +35,17 @@ export class FilesService {
       throw new Error(error.message);
     }
 
+    const allowedTypes = ['certificado', 'ficha_medica'];
+
+    if (!allowedTypes.includes(type)) {
+      throw new Error('Tipo de archivo inválido');
+    }
+
     const newFile = this.fileRepo.create({
       filename: file.originalname,
       path: fileName,
       mimetype: file.mimetype,
-      type: 'certificado',
+      type,
       user,
     });
 

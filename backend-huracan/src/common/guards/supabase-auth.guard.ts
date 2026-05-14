@@ -41,8 +41,6 @@ export class SupabaseAuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      console.log('SUPABASE AUTH GUARD ERROR:', error);
-
       throw new UnauthorizedException();
     }
   }

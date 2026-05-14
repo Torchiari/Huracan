@@ -21,7 +21,7 @@ export class FilesController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: any, @Req() req) {
-    return this.filesService.saveFile(file, req.user);
+    return this.filesService.saveFile(file, req.user, req.body.type);
   }
 
   @UseGuards(SupabaseAuthGuard)

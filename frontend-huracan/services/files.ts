@@ -4,15 +4,18 @@ import axios from "axios";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-export const uploadFile = async (file: File) => {
+export const uploadFile = async (file: File, type: string) => {
   const token = localStorage.getItem("token");
 
   const formData = new FormData();
+
   formData.append("file", file);
+  formData.append("type", type);
 
   return axios.post(`${API}/files/upload`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
     },
   });
 };

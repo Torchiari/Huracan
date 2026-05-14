@@ -13,7 +13,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { user, setUser } = useContext(AuthContext);
-  console.log("USER:", user);
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);

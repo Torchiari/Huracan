@@ -10,7 +10,7 @@ export default function Files() {
   const [file, setFile] = useState<File | null>(null);
   const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
+  const [fileType, setFileType] = useState("certificado");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const fetchFiles = async () => {
@@ -37,7 +37,7 @@ export default function Files() {
     setLoading(true);
 
     try {
-      await uploadFile(file);
+      await uploadFile(file, fileType);
       setFile(null);
 
       if (inputRef.current) {
@@ -57,6 +57,10 @@ export default function Files() {
     await deleteFile(id);
     fetchFiles();
   };
+
+  const certificados = files.filter((f) => f.type === "certificado");
+
+  const fichas = files.filter((f) => f.type === "ficha_medica");
 
   return (
     <div>
@@ -83,6 +87,14 @@ export default function Files() {
           >
             Elegir archivo
           </button>
+          <select
+            value={fileType}
+            onChange={(e) => setFileType(e.target.value)}
+            className="border border-gray-300 rounded-full px-4 py-2 text-sm"
+          >
+            <option value="certificado">Certificado médico</option>
+            <option value="ficha_medica">Ficha médica</option>
+          </select>
 
           <div className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-gray-600 text-sm truncate">
             {file ? file.name : "No se ha seleccionado ningún archivo"}
@@ -101,41 +113,108 @@ export default function Files() {
       {/* LISTADO */}
       <div className="bg-white p-6 rounded-2xl shadow-md">
         <h2 className="font-semibold mb-4 text-gray-800">Archivos subidos</h2>
+        <h2 className="font-semibold mb-4 text-gray-800">
+          Certificados médicos
+        </h2>
+        <h2 className="font-semibold mb-4 text-gray-800 mt-8">
+          Fichas médicas
+        </h2>
 
         {files.length === 0 ? (
           <p className="text-gray-500 text-sm">No tenés archivos cargados</p>
         ) : (
-          <div className="space-y-4">
-            {files.map((f) => (
-              <div
-                key={f.id}
-                className="border border-gray-200 p-4 rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"
-              >
-                <div>
-                  <p className="font-medium text-gray-800 break-all">
-                    📄 {f.filename}
-                  </p>
-                </div>
+          <div className="space-y-8">
+            {/* CERTIFICADOS */}
+            <div>
+              <h2 className="font-semibold mb-4 text-gray-800">
+                Certificados médicos
+              </h2>
 
-                <div className="flex gap-2 flex-wrap">
-                  <a
-                    href={f.signedUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm px-3 py-1 border rounded-full text-black hover:bg-gray-100"
-                  >
-                    Ver
-                  </a>
+              {certificados.length === 0 ? (
+                <p className="text-gray-400 text-sm">
+                  No hay certificados cargados
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {certificados.map((f) => (
+                    <div
+                      key={f.id}
+                      className="border border-gray-200 p-4 rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-800 break-all">
+                          📄 {f.filename}
+                        </p>
+                      </div>
 
-                  <button
-                    onClick={() => handleDelete(f.id)}
-                    className="text-sm px-3 py-1 bg-red-800 text-white rounded-full hover:bg-red-900"
-                  >
-                    Eliminar
-                  </button>
+                      <div className="flex gap-2 flex-wrap">
+                        <a
+                          href={f.signedUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm px-3 py-1 border rounded-full text-black hover:bg-gray-100"
+                        >
+                          Ver
+                        </a>
+
+                        <button
+                          onClick={() => handleDelete(f.id)}
+                          className="text-sm px-3 py-1 bg-red-800 text-white rounded-full hover:bg-red-900"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
+
+            {/* FICHAS */}
+            <div>
+              <h2 className="font-semibold mb-4 text-gray-800">
+                Fichas médicas
+              </h2>
+
+              {fichas.length === 0 ? (
+                <p className="text-gray-400 text-sm">
+                  No hay fichas médicas cargadas
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {fichas.map((f) => (
+                    <div
+                      key={f.id}
+                      className="border border-gray-200 p-4 rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-800 break-all">
+                          🩺 {f.filename}
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2 flex-wrap">
+                        <a
+                          href={f.signedUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm px-3 py-1 border rounded-full text-black hover:bg-gray-100"
+                        >
+                          Ver
+                        </a>
+
+                        <button
+                          onClick={() => handleDelete(f.id)}
+                          className="text-sm px-3 py-1 bg-red-800 text-white rounded-full hover:bg-red-900"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

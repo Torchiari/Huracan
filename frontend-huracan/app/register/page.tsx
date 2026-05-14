@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { register } from "@/services/auth";
+import { CheckCircle2, Mail } from "lucide-react";
 import Link from "next/link";
 
 export default function Register() {
@@ -78,10 +79,6 @@ export default function Register() {
       await register(data);
 
       setSuccess(true);
-
-      setTimeout(() => {
-        window.location.href = "/login";
-      }, 1500);
     } catch (err: any) {
       setError(
         err?.response?.data?.message || "No se pudo registrar el usuario",
@@ -178,9 +175,42 @@ export default function Register() {
         )}
 
         {success && (
-          <p className="text-green-600 text-sm mt-4 text-center">
-            Cuenta creada con éxito ✔ Redirigiendo...
-          </p>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+            <div className="w-full max-w-md rounded-3xl bg-white p-8 shadow-2xl animate-in fade-in zoom-in duration-300">
+              <div className="flex justify-center">
+                <div className="bg-green-100 p-4 rounded-full">
+                  <CheckCircle2 className="text-green-600 w-14 h-14" />
+                </div>
+              </div>
+
+              <h2 className="text-2xl font-bold text-center text-gray-800 mt-6">
+                Registro exitoso
+              </h2>
+
+              <div className="flex justify-center mt-4">
+                <div className="bg-red-100 p-3 rounded-full">
+                  <Mail className="text-red-700 w-7 h-7" />
+                </div>
+              </div>
+
+              <p className="text-gray-600 text-center mt-5 leading-relaxed">
+                Te enviamos un correo electrónico para activar tu cuenta.
+              </p>
+
+              <p className="text-sm text-gray-500 text-center mt-3 leading-relaxed">
+                Debés verificar tu email antes de poder iniciar sesión.
+                <br />
+                Revisá también la carpeta de spam o promociones.
+              </p>
+
+              <button
+                onClick={() => (window.location.href = "/login")}
+                className="w-full mt-8 bg-red-800 hover:bg-red-900 transition text-white py-3 rounded-2xl font-medium shadow-lg"
+              >
+                Ir al inicio de sesión
+              </button>
+            </div>
+          </div>
         )}
 
         <p className="text-sm text-gray-600 mt-6 text-center">

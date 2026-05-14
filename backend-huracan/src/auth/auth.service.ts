@@ -63,9 +63,6 @@ export class AuthService {
       password,
     });
 
-    console.log('SUPABASE LOGIN DATA:', data);
-    console.log('SUPABASE LOGIN ERROR:', error);
-
     if (error) {
       throw new UnauthorizedException(error.message);
     }
