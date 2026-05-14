@@ -65,7 +65,7 @@ export default function Files() {
   return (
     <div>
       <h1 className="text-2xl font-semibold text-white mb-6">
-        Certificados médicos
+        Documentación médica
       </h1>
 
       {/* UPLOAD */}
@@ -90,9 +90,10 @@ export default function Files() {
           <select
             value={fileType}
             onChange={(e) => setFileType(e.target.value)}
-            className="border border-gray-300 rounded-full px-4 py-2 text-sm"
+            className="border border-gray-300 rounded-full px-4 py-2 text-sm text-black bg-white cursor-pointer outline-none min-w-[190px]"
           >
             <option value="certificado">Certificado médico</option>
+
             <option value="ficha_medica">Ficha médica</option>
           </select>
 
@@ -112,14 +113,6 @@ export default function Files() {
 
       {/* LISTADO */}
       <div className="bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="font-semibold mb-4 text-gray-800">Archivos subidos</h2>
-        <h2 className="font-semibold mb-4 text-gray-800">
-          Certificados médicos
-        </h2>
-        <h2 className="font-semibold mb-4 text-gray-800 mt-8">
-          Fichas médicas
-        </h2>
-
         {files.length === 0 ? (
           <p className="text-gray-500 text-sm">No tenés archivos cargados</p>
         ) : (

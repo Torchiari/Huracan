@@ -31,14 +31,19 @@ export default function DashboardHome() {
           </div>
         </Link>
 
-        <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-md opacity-70">
-          <div className="text-red-800 text-xl mb-2">
-            <FaHeartbeat />
-          </div>
+        <Link href="/dashboard/files">
+          <div className="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer">
+            <div className="text-red-800 text-xl mb-2">
+              <FaHeartbeat />
+            </div>
 
-          <h2 className="font-semibold mb-1 text-black/80">Ficha médica</h2>
-          <p className="text-sm text-black/80">Próximamente disponible</p>
-        </div>
+            <h2 className="font-semibold mb-1 text-black/80">Ficha médica</h2>
+
+            <p className="text-sm text-black/80">
+              Subir ficha médica y documentación
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );

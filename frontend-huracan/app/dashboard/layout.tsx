@@ -80,7 +80,7 @@ export default function DashboardLayout({
               className={linkClass("/dashboard/files")}
               onClick={() => setOpen(false)}
             >
-              <FaFileAlt /> Certificados
+              <FaFileAlt /> Documentos médicos
             </Link>
 
             {user?.role === "admin" && (
