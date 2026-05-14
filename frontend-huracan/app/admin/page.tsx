@@ -36,11 +36,17 @@ export default function AdminPage() {
     setUsers(data);
   };
 
-  const filteredUsers = users.filter(
-    (u: any) =>
+  const filteredUsers = users.filter((u: any) => {
+    const fullName = `${u.name} ${u.lastname}`.toLowerCase();
+
+    return (
       u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()),
-  );
+      u.lastname.toLowerCase().includes(search.toLowerCase()) ||
+      fullName.includes(search.toLowerCase()) ||
+      u.email.toLowerCase().includes(search.toLowerCase()) ||
+      u.dni?.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <div className="text-white">
@@ -52,7 +58,7 @@ export default function AdminPage() {
       {/* 🔍 BUSCADOR */}
       <input
         type="text"
-        placeholder="Buscar por nombre o email..."
+        placeholder="Buscar por nombre, apellido o email..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="w-full max-w-xl mb-6 px-4 py-3 rounded-xl bg-white text-black shadow"
