@@ -21,9 +21,19 @@ export default function UserDetailPage() {
   const handleRoleChange = async () => {
     if (!confirm("¿Cambiar rol?")) return;
 
-    const newRole = user.role === "admin" ? "user" : "admin";
-    await changeRole(id, newRole);
-    loadUser();
+    try {
+      const newRole = user.role === "admin" ? "user" : "admin";
+
+      await changeRole(id, newRole);
+
+      await loadUser();
+
+      alert("Rol actualizado correctamente");
+    } catch (error: any) {
+      console.error(error);
+
+      alert(error.message || "Error al cambiar rol");
+    }
   };
 
   if (!user) return <p className="text-white">Cargando...</p>;

@@ -27,7 +27,7 @@ export async function getUserById(id: any) {
 export async function changeRole(id: any, role: string) {
   const token = localStorage.getItem("token");
 
-  await fetch(`${API}/admin/users/${id}/role`, {
+  const res = await fetch(`${API}/admin/users/${id}/role`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -35,4 +35,12 @@ export async function changeRole(id: any, role: string) {
     },
     body: JSON.stringify({ role }),
   });
+
+  if (!res.ok) {
+    const error = await res.json();
+
+    throw new Error(error.message || "Error cambiando rol");
+  }
+
+  return res.json();
 }
