@@ -3,7 +3,7 @@ import Reveal from "./Reveal";
 
 export default function RegistrationNotice() {
   return (
-    <section className="relative bg-stone-100 py-20 md:py-24 overflow-hidden">
+    <section className="relative bg-stone-200 py-20 md:py-24 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(252,165,165,0.25)_0%,_transparent_70%)]" />
 
       <Reveal
